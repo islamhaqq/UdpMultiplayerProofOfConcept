@@ -10,12 +10,14 @@ void listen_for_updates(udp::socket& socket) {
     std::array<char, 1024> recv_buf;
     udp::endpoint sender_endpoint;
     boost::system::error_code error;
-    size_t len = socket.receive_from(boost::asio::buffer(recv_buf), sender_endpoint, 0, error);
-    if (error && error != boost::asio::error::message_size) {
-        throw boost::system::system_error(error);
+    while (true) {
+        size_t len = socket.receive_from(boost::asio::buffer(recv_buf), sender_endpoint, 0, error);
+        if (error && error != boost::asio::error::message_size) {
+            throw boost::system::system_error(error);
+        }
+        std::cout.write(recv_buf.data(), len);
+        std::cout << std::endl;
     }
-    std::cout.write(recv_buf.data(), len);
-    std::cout << std::endl;
 }
 
 int main() {
@@ -29,9 +31,7 @@ int main() {
 
         std::thread listener_thread([&socket]() {
             try {
-                while (true) {
-                    listen_for_updates(socket);
-                }
+                listen_for_updates(socket);
             } catch (const std::exception& e) {
                 std::cerr << "Listener thread error: " << e.what() << std::endl;
             }
@@ -39,6 +39,7 @@ int main() {
 
         std::cout << "Enter damage taken: ";
 
+        // Changed from random damage to user input
         int damage;
         while (std::cin >> damage) {
             std::string message = "Damage: " + std::to_string(damage);
