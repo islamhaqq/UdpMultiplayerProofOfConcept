@@ -29,10 +29,24 @@ private:
     }
 
     void process_request() {
-        // Simulating damage taken
+        std::string received(recv_buffer_.data());
+        auto separator_pos = received.find(":");
+        if (separator_pos == std::string::npos) {
+            // Incorrect format, ignore the message
+            return;
+        }
+        int damage = std::stoi(received.substr(separator_pos + 1));
+
+        // Identify the client
         std::string client_id = remote_endpoint_.address().to_string() + ":" + std::to_string(remote_endpoint_.port());
+        // Initialize health to 100 if this is a new client
+        if (client_health_.find(client_id) == client_health_.end()) {
+            client_health_[client_id] = 100;
+        }
+
+        // Apply damage
         int& health = client_health_[client_id];
-        health = std::max(0, health - 1); // Damage taken, reduce health by 1
+        health = std::max(0, health - damage); // Ensure health does not go below 0
 
         std::string message = "Client " + client_id + " Health: " + std::to_string(health);
         std::cout << message << std::endl;

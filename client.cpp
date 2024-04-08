@@ -9,8 +9,8 @@
 using boost::asio::ip::udp;
 
 std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count());
-std::uniform_int_distribution<int> damage_distribution(1, 10);
-std::uniform_int_distribution<int> sleep_distribution(1, 5);
+std::uniform_int_distribution<int> damage_distribution(1, 10); // Damage range between 1 and 10
+std::uniform_int_distribution<int> sleep_distribution(1, 5); // Sleep between 1 and 5 seconds
 
 void listen_for_updates(udp::socket& socket) {
     std::array<char, 1024> recv_buf;
@@ -43,6 +43,7 @@ int main() {
             }
         });
 
+        // Simulate taking random damage at random intervals
         while (true) {
             int damage = damage_distribution(generator);
             std::string message = "Damage: " + std::to_string(damage);
