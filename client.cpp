@@ -42,7 +42,7 @@ int main() {
         // Changed from random damage to user input
         int damage;
         while (std::cin >> damage) {
-            std::string message = "Damage: " + std::to_string(damage);
+            std::string message = "Damage: " + std::to_string(damage) + "\n";
             socket.send_to(boost::asio::buffer(message), receiver_endpoint);
             std::cout << "Enter next damage taken: ";
         }
