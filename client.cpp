@@ -3,8 +3,14 @@
 #include <string>
 #include <thread>
 #include <array>
+#include <random>
+#include <chrono>
 
 using boost::asio::ip::udp;
+
+std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count());
+std::uniform_int_distribution<int> damage_distribution(1, 10);
+std::uniform_int_distribution<int> sleep_distribution(1, 5);
 
 void listen_for_updates(udp::socket& socket) {
     std::array<char, 1024> recv_buf;
@@ -37,9 +43,14 @@ int main() {
             }
         });
 
-        // Simulate taking damage randomly
-        std::string message = "Damage";
-        socket.send_to(boost::asio::buffer(message), receiver_endpoint);
+        while (true) {
+            int damage = damage_distribution(generator);
+            std::string message = "Damage: " + std::to_string(damage);
+            socket.send_to(boost::asio::buffer(message), receiver_endpoint);
+
+            int sleep_time = sleep_distribution(generator);
+            std::this_thread::sleep_for(std::chrono::seconds(sleep_time));
+        }
 
         if(listener_thread.joinable()) {
             listener_thread.join();
