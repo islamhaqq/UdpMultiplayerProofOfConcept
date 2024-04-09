@@ -1,7 +1,3 @@
-Sure, here's a README.md that summarizes your project and provides guidance on how to build and run the server and clients.
-
----
-
 # Simple Multiplayer Server-Client Architecture
 
 ## Overview
