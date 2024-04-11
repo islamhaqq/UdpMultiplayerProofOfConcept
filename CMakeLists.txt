@@ -19,3 +19,5 @@ add_executable(client client.cpp)
 # Link Boost libraries
 target_link_libraries(server ${Boost_LIBRARIES} Ws2_32)
 target_link_libraries(client ${Boost_LIBRARIES} Ws2_32)
+
+add_definitions(-D_WIN32_WINNT=0x0601)
