@@ -5,8 +5,6 @@
 
 using boost::asio::ip::udp;
 
-std::string message;
-
 class Server {
 public:
     explicit Server(boost::asio::io_context& io_context) : socket_(io_context, udp::endpoint(udp::v4(), 12345)) {
@@ -18,6 +16,7 @@ private:
     udp::endpoint remote_endpoint_;
     std::array<char, 1024> recv_buffer_{};
     std::unordered_map<std::string, int> client_health_;
+    std::string message;
 
     void startReceive() {
         socket_.async_receive_from(
