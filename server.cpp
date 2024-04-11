@@ -5,6 +5,8 @@
 
 using boost::asio::ip::udp;
 
+std::string message;
+
 class Server {
 public:
     explicit Server(boost::asio::io_context& io_context) : socket_(io_context, udp::endpoint(udp::v4(), 12345)) {
@@ -26,7 +28,7 @@ private:
             });
     }
 
-    void broadcastHealthToAllClients(std::string message) {
+    void broadcastHealthToAllClients() {
         for (const auto& pair : client_health_) {
             udp::resolver resolver(socket_.get_executor());
             auto endpoints = resolver.resolve(udp::v4(), pair.first.substr(0, pair.first.find(':')), pair.first.substr(pair.first.find(':') + 1));
@@ -52,10 +54,10 @@ private:
         int& health = client_health_[client_id];
         health = std::max(0, health - damage);
 
-        const std::string message = "Client " + client_id + " Health: " + std::to_string(health);
+        message = "Client " + client_id + " Health: " + std::to_string(health);
         std::cout << message << std::endl;
 
-        broadcastHealthToAllClients(message);
+        broadcastHealthToAllClients();
     }
 };
 
