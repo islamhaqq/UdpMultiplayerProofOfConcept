@@ -19,5 +19,3 @@ add_executable(client client.cpp)
 # Link Boost libraries
 target_link_libraries(server ${Boost_LIBRARIES} Ws2_32)
 target_link_libraries(client ${Boost_LIBRARIES} Ws2_32)
-
-add_executable(SimpleUdpApp main.cpp)
